@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Periodic Table</title>
+    <title>Elements Pro - Periodic Table</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -19,12 +19,30 @@
             color: #f8fafc;
             line-height: 1.6;
             overflow-x: hidden;
-            padding: 20px;
+            padding-top: 80px; /* Add padding to body to prevent content from being hidden by fixed header */
+        }
+
+        .main-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 20px;
+            height: 70px;
+            background: rgba(15, 32, 39, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 999;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
         .container {
             max-width: 1600px;
             margin: 0 auto;
+            padding: 20px;
+            position: relative;
         }
 
         .page-title {
@@ -35,6 +53,271 @@
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
+        /* Auth Modal Styles */
+        .auth-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .auth-modal.active {
+            display: flex;
+        }
+
+        .auth-content {
+            background: linear-gradient(135deg, #1E293B 0%, #334155 100%);
+            padding: 2.5rem;
+            border-radius: 16px;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            position: relative;
+            color: #F8FAFC;
+        }
+
+        .close-auth {
+            position: absolute;
+            top: 1.2rem;
+            right: 1.2rem;
+            font-size: 2rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: #F8FAFC;
+            transition: transform 0.3s;
+        }
+
+        .close-auth:hover {
+            transform: rotate(90deg);
+        }
+
+        .auth-title {
+            font-size: 1.8rem;
+            color: #60A5FA;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .auth-input {
+            padding: 1rem;
+            background-color: #1E293B;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            color: #F8FAFC;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .auth-input:focus {
+            outline: none;
+            border-color: #60A5FA;
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+        }
+
+        .auth-btn {
+            padding: 1rem;
+            background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(37, 99, 235, 0.4);
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 1rem;
+            color: #94A3B8;
+        }
+
+        .auth-switch a {
+            color: #60A5FA;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
+
+        .auth-message {
+            padding: 0.8rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+            display: none;
+        }
+
+        .auth-message.success {
+            background-color: rgba(16, 185, 129, 0.2);
+            border: 1px solid #10B981;
+            color: #10B981;
+            display: block;
+        }
+
+        .auth-message.error {
+            background-color: rgba(239, 68, 68, 0.2);
+            border: 1px solid #EF4444;
+            color: #EF4444;
+            display: block;
+        }
+
+        /* Profile Menu Styles */
+        .profile-menu-container {
+            position: relative;
+            z-index: 100;
+        }
+
+        .profile-avatar-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1.5rem;
+            color: white;
+            cursor: pointer;
+            border: 2px solid #475569;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .profile-avatar-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 15px rgba(37, 99, 235, 0.4);
+        }
+
+        .profile-dropdown {
+            display: none;
+            position: absolute;
+            top: 60px; /* Adjusted position */
+            right: 0;
+            width: 280px;
+            background: linear-gradient(135deg, #1E293B 0%, #334155 100%);
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            padding: 1rem;
+            z-index: 101; /* Ensured it's on top */
+            animation: fadeInDropdown 0.3s ease;
+        }
+
+        .profile-dropdown.show {
+            display: block;
+        }
+        
+        @keyframes fadeInDropdown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dropdown-header {
+            text-align: center;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #475569;
+            margin-bottom: 1rem;
+        }
+        
+        .dropdown-user-name {
+            font-weight: 600;
+            color: #F8FAFC;
+        }
+
+        .dropdown-user-email {
+            font-size: 0.8rem;
+            color: #94A3B8;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem;
+            border-radius: 8px;
+            color: #CBD5E1;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+
+        .dropdown-item i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        .dropdown-item:hover {
+            background-color: #334155;
+            color: #F8FAFC;
+        }
+        
+        .dropdown-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            padding: 1rem;
+        }
+        
+        .dropdown-btn {
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .dropdown-btn-login {
+            background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+            color: white;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);
+        }
+        .dropdown-btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(37, 99, 235, 0.4);
+        }
+
+        .dropdown-btn-signup {
+            background: none;
+            border: 2px solid #334155;
+            color: #CBD5E1;
+        }
+        .dropdown-btn-signup:hover {
+            background-color: #334155;
+            border-color: #475569;
+        }
+
+        /* Rest of your existing styles */
         .tabs {
             display: flex;
             gap: 0.8rem;
@@ -112,13 +395,9 @@
         .periodic-table {
             display: grid;
             grid-template-columns: repeat(18, 1fr);
-            gap: 6px;
+            gap: 8px; /* Increased gap */
             margin-bottom: 2rem;
-            background: rgba(30, 41, 59, 0.8);
-            padding: 1.5rem;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
+            /* Removed background and container styles */
         }
 
         .element {
@@ -134,7 +413,21 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             position: relative;
             overflow: hidden;
+            animation: reveal 0.5s ease forwards;
+            opacity: 0; /* Start hidden for animation */
         }
+        
+        @keyframes reveal {
+          from {
+            opacity: 0;
+            transform: scale(0.8);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+
 
         .element:hover {
             transform: scale(1.08);
@@ -638,8 +931,20 @@
     </style>
 </head>
 <body>
+    <header class="main-header">
+         <!-- Profile Menu -->
+        <div class="profile-menu-container">
+            <button class="profile-avatar-btn" id="profile-avatar-btn">
+                <i class="fas fa-user"></i>
+            </button>
+            <div class="profile-dropdown" id="profile-dropdown">
+                <!-- Dropdown content is generated by JS -->
+            </div>
+        </div>
+    </header>
+
     <div class="container">
-        <h1 class="page-title">Interactive Periodic Table</h1>
+        <h1 class="page-title">Elements Pro</h1>
         
         <div class="tabs">
             <div class="tab active" data-tab="table">Periodic Table</div>
@@ -692,7 +997,8 @@
             </div>
 
             <div class="periodic-table" id="periodic-table">
-                </div>
+                <!-- Elements will be generated by JavaScript -->
+            </div>
         </div>
 
         <div class="content-section" id="quiz-section">
@@ -705,13 +1011,16 @@
                 <div class="quiz-timer" id="quiz-timer">Time: 00:00</div>
                 
                 <div class="quiz-progress" id="quiz-progress">
-                    </div>
+                    <!-- Progress dots will be generated by JavaScript -->
+                </div>
                 
                 <div class="quiz-question" id="quiz-question">
-                    </div>
+                    <!-- Question will be populated by JavaScript -->
+                </div>
                 
                 <div class="quiz-options" id="quiz-options">
-                    </div>
+                    <!-- Options will be populated by JavaScript -->
+                </div>
                 
                 <div class="quiz-navigation">
                     <button class="quiz-btn" id="prev-btn" disabled><i class="fas fa-arrow-left"></i> Previous</button>
@@ -748,6 +1057,33 @@
         </div>
     </div>
 
+    <!-- Auth Modal -->
+    <div class="auth-modal" id="auth-modal">
+        <div class="auth-content">
+            <button class="close-auth" id="close-auth">×</button>
+            <h2 class="auth-title" id="auth-title">Sign In</h2>
+            
+            <div class="auth-message" id="auth-message"></div>
+            
+            <form class="auth-form" id="auth-form">
+                <div id="name-field" style="display: none;">
+                    <input type="text" class="auth-input" id="name" placeholder="Full Name">
+                </div>
+                <input type="email" class="auth-input" id="email" placeholder="Email Address" required>
+                <input type="password" class="auth-input" id="password" placeholder="Password" required>
+                <button type="submit" class="auth-btn" id="auth-submit-btn">
+                    <i class="fas fa-user"></i>
+                    Sign In
+                </button>
+            </form>
+            
+            <div class="auth-switch">
+                <span id="auth-switch-text">Don't have an account?</span>
+                <a id="auth-switch-link">Sign up</a>
+            </div>
+        </div>
+    </div>
+
     <div class="floating-buttons">
         <div class="floating-btn" id="scroll-to-top" title="Scroll to Top">
             <i class="fas fa-arrow-up"></i>
@@ -757,13 +1093,231 @@
         </div>
     </div>
 
+    <!-- Element Details Modal -->
     <div class="modal" id="element-modal">
         <div class="modal-content">
             <button class="close-modal" id="close-modal">×</button>
             <div class="element-details" id="element-details">
-                </div>
+                <!-- Element details will be populated by JavaScript -->
+            </div>
         </div>
     </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword, 
+            signOut, 
+            onAuthStateChanged,
+            updateProfile
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBEpoxrE-50cqimFahauRHr9E_t3YQi4ns",
+            authDomain: "prdo-29286.firebaseapp.com",
+            projectId: "prdo-29286",
+            storageBucket: "prdo-29286.appspot.com",
+            messagingSenderId: "162291527633",
+            appId: "1:162291527633:web:7c143ef12a7dfdc6d1baf0",
+            measurementId: "G-C9VHDCQYVR"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        
+        const profileAvatarBtn = document.getElementById('profile-avatar-btn');
+        const profileDropdown = document.getElementById('profile-dropdown');
+        const authModal = document.getElementById('auth-modal');
+
+        // Toggle profile dropdown
+        profileAvatarBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profileDropdown.classList.toggle('show');
+        });
+
+        // Close dropdown if clicked outside
+        window.addEventListener('click', () => {
+            if (profileDropdown.classList.contains('show')) {
+                profileDropdown.classList.remove('show');
+            }
+        });
+        
+        profileDropdown.addEventListener('click', e => e.stopPropagation());
+
+        // Update UI based on auth state
+        const updateUIForLoggedInUser = (user) => {
+            const userName = user.displayName || user.email.split('@')[0];
+            profileAvatarBtn.innerHTML = userName.charAt(0).toUpperCase();
+
+            profileDropdown.innerHTML = `
+                <div class="dropdown-header">
+                    <div class="dropdown-user-name">${userName}</div>
+                    <div class="dropdown-user-email">${user.email}</div>
+                </div>
+                <a class="dropdown-item" id="add-profile-image">
+                    <i class="fas fa-camera"></i>
+                    <span>Add Profile Image</span>
+                </a>
+                <a class="dropdown-item" id="settings-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+                <a class="dropdown-item" id="logout-btn-dropdown">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            `;
+            
+            document.getElementById('logout-btn-dropdown').addEventListener('click', () => {
+                signOut(auth).catch(error => console.error('Sign out error', error));
+            });
+        };
+        
+        const updateUIForLoggedOutUser = () => {
+            profileAvatarBtn.innerHTML = `<i class="fas fa-user"></i>`;
+            profileDropdown.innerHTML = `
+                <div class="dropdown-buttons">
+                     <button class="dropdown-btn dropdown-btn-login" id="login-btn-dropdown">
+                         <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                    <button class="dropdown-btn dropdown-btn-signup" id="signup-btn-dropdown">
+                        <i class="fas fa-user-plus"></i> Sign Up
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('login-btn-dropdown').addEventListener('click', () => {
+                openAuthModal('login');
+            });
+            document.getElementById('signup-btn-dropdown').addEventListener('click', () => {
+                openAuthModal('signup');
+            });
+        };
+        
+        // Open and configure auth modal
+        function openAuthModal(mode) {
+             const authTitle = document.getElementById('auth-title');
+             const authSubmitBtn = document.getElementById('auth-submit-btn');
+             const authSwitchText = document.getElementById('auth-switch-text');
+             const authSwitchLink = document.getElementById('auth-switch-link');
+             const nameField = document.getElementById('name-field');
+            
+             if (mode === 'signup') {
+                 authTitle.textContent = 'Sign Up';
+                 authSubmitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Sign Up';
+                 authSwitchText.textContent = 'Already have an account?';
+                 authSwitchLink.textContent = 'Sign in';
+                 nameField.style.display = 'block';
+             } else {
+                 authTitle.textContent = 'Sign In';
+                 authSubmitBtn.innerHTML = '<i class="fas fa-user"></i> Sign In';
+                 authSwitchText.textContent = "Don't have an account?";
+                 authSwitchLink.textContent = 'Sign up';
+                 nameField.style.display = 'none';
+             }
+             authModal.classList.add('active');
+             profileDropdown.classList.remove('show');
+        }
+
+        // Auth state observer
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                updateUIForLoggedInUser(user);
+            } else {
+                updateUIForLoggedOutUser();
+            }
+        });
+        
+        // Centralized Auth Error Handler
+        const handleAuthError = (error) => {
+            console.error("Authentication error:", error);
+            if (error.code === 'auth/unauthorized-domain') {
+                const friendlyMessage = "This domain is not authorized for sign-in. Please authorize it in your Firebase console under Authentication > Settings > Authorized domains.";
+                showAuthMessage(friendlyMessage, 'error');
+            } else if (error.code === 'auth/invalid-credential') {
+                 const friendlyMessage = "Invalid email or password. Please check your credentials and try again.";
+                showAuthMessage(friendlyMessage, 'error');
+            } else {
+                showAuthMessage(error.message, 'error');
+            }
+        };
+
+        // Email/Password Sign Up/In
+        document.getElementById('auth-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const nameInput = document.getElementById('name');
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const isSignUp = document.getElementById('auth-title').textContent === 'Sign Up';
+            
+            if (isSignUp) {
+                if (!nameInput.value.trim()) {
+                    showAuthMessage('Please enter your full name.', 'error');
+                    return;
+                }
+                createUserWithEmailAndPassword(auth, email, password)
+                    .then((userCredential) => {
+                        const user = userCredential.user;
+                        return updateProfile(user, { displayName: nameInput.value.trim() });
+                    })
+                    .then(() => {
+                        showAuthMessage('Account created successfully!', 'success');
+                        setTimeout(() => {
+                            authModal.classList.remove('active');
+                        }, 1500);
+                    })
+                    .catch(handleAuthError);
+            } else { // Sign In
+                signInWithEmailAndPassword(auth, email, password)
+                    .then((userCredential) => {
+                        showAuthMessage('Signed in successfully!', 'success');
+                        setTimeout(() => {
+                            authModal.classList.remove('active');
+                        }, 1500);
+                    })
+                    .catch(handleAuthError);
+            }
+        });
+
+        // Show auth message
+        function showAuthMessage(message, type) {
+            const messageElement = document.getElementById('auth-message');
+            messageElement.textContent = message;
+            messageElement.className = 'auth-message ' + type;
+            // Ensure message is visible even if modal was just opened
+            messageElement.style.display = 'block';
+        }
+
+        // Toggle between Sign In and Sign Up
+        document.getElementById('auth-switch-link').addEventListener('click', () => {
+            const isSignIn = document.getElementById('auth-title').textContent === 'Sign In';
+            openAuthModal(isSignIn ? 'signup' : 'login');
+            document.getElementById('auth-form').reset();
+            document.getElementById('auth-message').className = 'auth-message';
+        });
+
+
+        // Close auth modal
+        document.getElementById('close-auth').addEventListener('click', () => {
+            authModal.classList.remove('active');
+        });
+
+        // Close auth modal when clicking outside
+        authModal.addEventListener('click', (e) => {
+            if (e.target === authModal) {
+                authModal.classList.remove('active');
+            }
+        });
+    </script>
 
     <script>
         // Complete elements data for all 118 elements
@@ -953,6 +1507,9 @@
                         elementDiv.className = `element ${getCategoryClass(element.category)}`;
                         elementDiv.dataset.atomicNumber = element.atomicNumber;
                         
+                        // Staggered animation delay
+                        elementDiv.style.animationDelay = `${(period * 18 + group) * 0.01}s`;
+
                         elementDiv.innerHTML = `
                             <div class="element-animation ${getCategoryClass(element.category)}"></div>
                             <div class="element-number">${element.atomicNumber}</div>
@@ -1067,19 +1624,16 @@
 
         // Helper function to get random options including the correct answer
         function getRandomOptions(correctAnswer, allOptions) {
-            const options = [correctAnswer];
+            const options = new Set([correctAnswer]);
             const otherOptions = allOptions.filter(opt => opt !== correctAnswer);
             
-            // Shuffle other options
-            const shuffledOptions = [...otherOptions].sort(() => Math.random() - 0.5);
-            
-            // Add 3 random options
-            for (let i = 0; i < 3; i++) {
-                options.push(shuffledOptions[i % shuffledOptions.length]);
+            while(options.size < 4 && otherOptions.length > 0) {
+                const randomIndex = Math.floor(Math.random() * otherOptions.length);
+                options.add(otherOptions.splice(randomIndex, 1)[0]);
             }
             
             // Shuffle the options
-            return options.sort(() => Math.random() - 0.5);
+            return Array.from(options).sort(() => Math.random() - 0.5);
         }
 
         function initializeQuiz() {
@@ -1122,6 +1676,7 @@
         }
 
         function loadQuestion(index) {
+            currentQuestion = index;
             const question = quizQuestions[index];
             document.getElementById('quiz-question').textContent = question.question;
             
@@ -1156,13 +1711,10 @@
             
             // Update progress dots
             document.querySelectorAll('.progress-dot').forEach((dot, i) => {
-                dot.classList.remove('active');
-                if (userAnswers[i] === quizQuestions[i].answer) {
-                    dot.classList.add('correct');
-                } else if (userAnswers[i] !== undefined) {
-                    dot.classList.add('incorrect');
+                dot.className = 'progress-dot'; // Reset classes
+                if (userAnswers[i] !== undefined) {
+                     dot.classList.add(userAnswers[i] === quizQuestions[i].answer ? 'correct' : 'incorrect');
                 }
-                
                 if (i === index) {
                     dot.classList.add('active');
                 }
@@ -1170,7 +1722,9 @@
             
             // Update navigation buttons
             document.getElementById('prev-btn').disabled = index === 0;
-            document.getElementById('next-btn').textContent = index === quizQuestions.length - 1 ? 'Finish Quiz' : 'Next Question';
+            document.getElementById('next-btn').textContent = index === quizQuestions.length - 1 ? 'Finish Quiz' : 'Next';
+            document.getElementById('next-btn').innerHTML = index === quizQuestions.length - 1 ? 'Finish Quiz' : 'Next <i class="fas fa-arrow-right"></i>';
+
         }
 
         function finishQuiz() {
@@ -1179,28 +1733,23 @@
             
             // Calculate score
             let score = 0;
-            let answeredQuestions = 0;
             
             userAnswers.forEach((answer, index) => {
-                if (answer !== undefined) {
-                    answeredQuestions++;
-                    if (answer === quizQuestions[index].answer) {
-                        score++;
-                    }
+                if (answer === quizQuestions[index].answer) {
+                    score++;
                 }
             });
             
             // Display results
-            document.getElementById('result-score').textContent = `${score}/${answeredQuestions}`;
+            document.getElementById('result-score').textContent = `${score}/${quizQuestions.length}`;
             
             let message = '';
-            if (answeredQuestions === 0) {
-                message = 'You did not answer any questions. Try again!';
-            } else if (score === answeredQuestions) {
+            const percentage = score / quizQuestions.length;
+            if (percentage === 1) {
                 message = 'Perfect! You are a chemistry expert!';
-            } else if (score >= answeredQuestions * 0.7) {
+            } else if (percentage >= 0.7) {
                 message = 'Great job! You know your elements well!';
-            } else if (score >= answeredQuestions * 0.5) {
+            } else if (percentage >= 0.5) {
                 message = 'Good effort! Keep learning and try again.';
             } else {
                 message = 'Keep studying the periodic table and try again.';
@@ -1314,29 +1863,6 @@
             });
         });
     </script>
-    
-    <script type="module">
-      // Import the functions you need from the SDKs you need
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-      import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-analytics.js";
-      // TODO: Add SDKs for Firebase products that you want to use
-      // https://firebase.google.com/docs/web/setup#available-libraries
-
-      // Your web app's Firebase configuration
-      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-      const firebaseConfig = {
-        apiKey: "AIzaSyAK6umTipzms4Toqr0JplZOUJ80lfOV3JY",
-        authDomain: "prdo-4b5b9.firebaseapp.com",
-        projectId: "prdo-4b5b9",
-        storageBucket: "prdo-4b5b9.firebasestorage.app",
-        messagingSenderId: "1095748818909",
-        appId: "1:1095748818909:web:4d320737c59dfc358b0834",
-        measurementId: "G-WL76RX6NCQ"
-      };
-
-      // Initialize Firebase
-      const app = initializeApp(firebaseConfig);
-      const analytics = getAnalytics(app);
-    </script>
 </body>
 </html>
+
